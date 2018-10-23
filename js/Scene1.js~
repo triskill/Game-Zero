@@ -1,0 +1,27 @@
+class Scene1 extends Phaser.Scene {
+  constructor(){
+    super({key:'Scene1'});
+  }
+  preload(){
+    this.load.image('hero', 'assets/hero.png');
+  }
+  create(){
+    this.canvas = this.sys.game.canvas;
+    this.hero = this.add.image(200, 200, 'hero');
+    this.text = this.add.text(this.canvas.width/2, 0, "Game 0", {fill:"#ff0", font:"bold 15px Arial"});
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+  update(delta){
+    if(this.cursors.left.isDown && this.hero.x > 25){
+      this.hero.x -= 5;
+    }else if (this.cursors.right.isDown && this.hero.x < this.canvas.width) {
+      this.hero.x += 5;
+    }
+	if (this.cursors.up.isDown) {
+      this.hero.y -= 5;
+    }else if (this.cursors.down.isDown) {
+      this.hero.y += 5;
+    }
+
+  }
+}
