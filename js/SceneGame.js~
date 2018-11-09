@@ -21,11 +21,10 @@ class SceneGame extends Phaser.Scene {
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
     this.cursors = this.input.keyboard.createCursorKeys();
-		// vytvoreni instanci tridy Zombie
+
     for(var i = 0; i < this.pocetZombiku; i++){
       this.zombici[i] = new Zombie(this);
     }
-		// vytvoreni instanci tridy Star
     for(var i = 0; i < this.pocetStars; i++){
       this.stars[i] = new Star(this);
     }
@@ -43,6 +42,8 @@ class SceneGame extends Phaser.Scene {
   ziskanBod(){
     this.body++;
     this.bodyText.text = "body: "+this.body;
+
+
   }
   controls(){
     if(this.cursors.left.isDown && this.hero.x > 25){
