@@ -9,9 +9,9 @@ class Zombie{
   }
   update(){
     this.utok();
-    if(this.narazilJsemDoHrdiny()){
+    if(this.narazilJsemDoHrdiny() && this.game.smrtelnost){
       console.log("hrdina byl sežrán");
-      this.game.scene.start("SceneGameOver");
+      this.game.prohra();
     }
   }
 
@@ -20,14 +20,14 @@ class Zombie{
     x=this.game.hero.x-this.obrazek.x;
     y=this.game.hero.y-this.obrazek.y;
     if(x>0){
-      this.obrazek.x++;
+      this.obrazek.x += this.game.zombieSpeed;
     }else{
-      this.obrazek.x--;
+      this.obrazek.x -= this.game.zombieSpeed;
     }
     if(y>0){
-      this.obrazek.y++;
+      this.obrazek.y += this.game.zombieSpeed;
     }else{
-      this.obrazek.y--;
+      this.obrazek.y -= this.game.zombieSpeed;
     }
   }
   chodimVKruhu(){

@@ -3,12 +3,15 @@ class SceneGame extends Phaser.Scene {
     super({key:'SceneGame'});
 
     this.heroSpeed = 5;
-    this.zombieSpeed = 2;
+    this.zombieSpeed = 1;
     this.pocetZombiku = 5;
     this.zombici = [];
     this.pocetStars = 5;
     this.stars = [];
     this.body = 0
+    this.paused = false;
+    this.smrtelnost = true;
+    this.nesmrtelnost(2000);
   }
   preload(){
     this.load.image('hero', 'assets/hero.png');
@@ -21,24 +24,28 @@ class SceneGame extends Phaser.Scene {
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
     this.cursors = this.input.keyboard.createCursorKeys();
-		// vytvoreni instanci tridy Zombie
+
+    this.input.keyboard.on('keydown_P', this.pause,this);
+
+		// vytvoření instancí třídy Zombie
     for(var i = 0; i < this.pocetZombiku; i++){
       this.zombici[i] = new Zombie(this);
     }
-		// vytvoreni instanci tridy Star
-    for(var i = 0; i < this.pocetStars; i++){
-      this.stars[i] = new Star(this);
+    // vytvoření instancí třídy Star
+    for(var j = 0; j < this.pocetStars; j++){
+      this.stars[j] = new Star(this);
     }
-
   }
   update(delta){
-    for(var i = 0; i < this.pocetZombiku; i++){
-      this.zombici[i].update();
+    if(!this.paused){
+      for(var i = 0; i < this.pocetZombiku; i++){
+        this.zombici[i].update();
+      }
+      for(var j = 0; j < this.pocetStars; j++){
+        this.stars[j].update();
+      }
+      this.controls();
     }
-    for(var i = 0; i < this.pocetStars; i++){
-      this.stars[i].update();
-    }
-    this.controls();
   }
   ziskanBod(){
     this.body++;
@@ -57,5 +64,30 @@ class SceneGame extends Phaser.Scene {
     }
 
   }
-
+  nesmrtelnost(time){
+    this.smrtelnost = false;
+    var that = this;
+    window.setTimeout(function(){
+      that.smrtelnost = true;
+    },time);
+  }
+  pause(){
+    console.log("pause",this.paused);
+    this.paused = !this.paused;
+    console.log("pause",this.paused);
+  }
+  vyhra(){
+    this.scene.stop("SceneGame");
+    this.scene.start("SceneGameOver",{body:this.body, vyhra:true});
+    this.reset();
+  }
+  prohra(){
+    this.scene.stop("SceneGame");
+    this.scene.start("SceneGameOver",{body:this.body, vyhra:false});
+    this.reset();
+  }
+  reset(){
+    this.zombieSpeed =1;
+    this.body = 0;
+  }
 }
