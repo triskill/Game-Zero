@@ -14,19 +14,26 @@ class SceneGame extends Phaser.Scene {
     this.nesmrtelnost(2000);
   }
   preload(){
+    //načtení obrázků
     this.load.image('hero', 'assets/hero.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('zombie', 'assets/zombie.png');
+    //načtení zvuků
+    this.load.audio('bod', 'assets/bod.mp3');
   }
   create(){
+    // vytvoření herního plátna
     this.canvas = this.sys.game.canvas;
+    // obrázek hrdiny
     this.hero = this.add.image(200, 200, 'hero');
+    //zvuky hry
+    this.bodZvuk = this.sound.add('bod');
+    // vložení textu
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
+    //ovádání klávesnice
     this.cursors = this.input.keyboard.createCursorKeys();
-
     this.input.keyboard.on('keydown_P', this.pause,this);
-
 		// vytvoření instancí třídy Zombie
     for(var i = 0; i < this.pocetZombiku; i++){
       this.zombici[i] = new Zombie(this);
