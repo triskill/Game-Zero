@@ -1,8 +1,8 @@
 class Zombie{
-  constructor(game, x, y){
+  constructor(game, properties){
     this.game = game;
-    this.x = x | Math.random()*this.game.canvas.width;
-    this.y = y | Math.random()*this.game.canvas.height;
+    this.x = properties.x || Math.random()*this.game.canvas.width;
+    this.y = properties.y || Math.random()*this.game.canvas.height;
 
     this.obrazek = this.game.add.image(this.x, this.y, 'zombie');
     this.i=0; //pro potreby vypoctu kruhove drahy
@@ -10,7 +10,6 @@ class Zombie{
   update(){
     this.utok();
     if(this.narazilJsemDoHrdiny() && this.game.smrtelnost){
-      console.log("hrdina byl sežrán");
       this.game.prohra();
     }
   }

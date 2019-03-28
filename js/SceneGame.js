@@ -4,24 +4,74 @@ class SceneGame extends Phaser.Scene {
 
     this.heroSpeed = 5;
     this.zombieSpeed = 1;
-    this.pocetZombiku = 5;
-    this.zombici = [];
-    this.pocetStars = 5;
-    this.stars = [];
     this.body = 0
     this.paused = false;
     this.smrtelnost = true;
-    this.nesmrtelnost(2000);
+    this.stars = [];
+    this.zombies = [];
+    this.levels = [
+      {},
+      {
+        zombies:[
+          {},
+          {},
+          {}
+        ],
+        stars:[
+          {},
+          {},
+          {}
+        ]
+      },
+      {
+        zombies:[
+          {},
+          {},
+          {},
+          {}
+        ],
+        stars:[
+          {},
+          {},
+          {},
+          {}
+        ]
+      },
+      {
+        zombies:[
+          {},
+          {},
+          {},
+          {},
+          {}
+        ],
+        stars:[
+          {},
+          {},
+          {},
+          {},
+          {}
+        ]
+      },
+      {}
+    ];
+    this.nesmrtelnost(1000);
+  }
+  init(data){
+    this.level = data.level || 1;
   }
   preload(){
     //načtení obrázků
     this.load.image('hero', 'assets/hero.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('zombie', 'assets/zombie.png');
+    this.load.image('gameOverBG', 'assets/gameOverBackground.png');
     //načtení zvuků
     this.load.audio('bod', 'assets/bod.mp3');
   }
   create(){
+    // načtení levelu
+    var level = this.levels[this.level];
     // vytvoření herního plátna
     this.canvas = this.sys.game.canvas;
     // obrázek hrdiny
@@ -31,24 +81,25 @@ class SceneGame extends Phaser.Scene {
     // vložení textu
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
+    this.add.text(300, 0, "level: "+this.level);
     //ovádání klávesnice
     this.cursors = this.input.keyboard.createCursorKeys();
     this.input.keyboard.on('keydown_P', this.pause,this);
 		// vytvoření instancí třídy Zombie
-    for(var i = 0; i < this.pocetZombiku; i++){
-      this.zombici[i] = new Zombie(this);
+    for(var i = 0; i < level.zombies.length; i++){
+      this.zombies[i] = new Zombie(this, level.zombies[i]);
     }
     // vytvoření instancí třídy Star
-    for(var j = 0; j < this.pocetStars; j++){
-      this.stars[j] = new Star(this);
+    for(var i = 0; i < level.stars.length; i++){
+      this.stars[i] = new Star(this, level.stars[i]);
     }
   }
   update(delta){
     if(!this.paused){
-      for(var i = 0; i < this.pocetZombiku; i++){
-        this.zombici[i].update();
+      for(var i = 0; i < this.zombies.length; i++){
+        this.zombies[i].update();
       }
-      for(var j = 0; j < this.pocetStars; j++){
+      for(var j = 0; j < this.stars.length; j++){
         this.stars[j].update();
       }
       this.controls();
@@ -56,7 +107,11 @@ class SceneGame extends Phaser.Scene {
   }
   ziskanBod(){
     this.body++;
+    this.bodZvuk.play();
     this.bodyText.text = "body: "+this.body;
+    if(this.stars.length == this.body){
+      this.vyhra();
+    }
   }
   controls(){
     if(this.cursors.left.isDown && this.hero.x > 25){
@@ -78,23 +133,42 @@ class SceneGame extends Phaser.Scene {
       that.smrtelnost = true;
     },time);
   }
+  gameOver(vyhra){
+    this.paused = true;
+    this.hero = this.add.image(this.canvas.width/2, this.canvas.height/2, 'gameOverBG');
+    var napisX = this.canvas.width/2-50;
+    var napisY = this.canvas.height/2-10;
+    if(vyhra){
+      this.text = this.add.text(napisX, napisY, "Výhra");
+    }else{
+      this.text = this.add.text(napisX, napisY, "Prohra");
+    }
+    this.textBody = this.add.text(napisX, napisY+30, "body : "+this.body);
+    for (let i = 1; i < (this.levels.length - 1); i++) {
+      this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
+        .setInteractive()
+        .on('pointerdown', () => this.playLevel(i) );
+    }
+
+  }
   pause(){
-    console.log("pause",this.paused);
     this.paused = !this.paused;
-    console.log("pause",this.paused);
   }
   vyhra(){
-    this.scene.stop("SceneGame");
-    this.scene.start("SceneGameOver",{body:this.body, vyhra:true});
-    this.reset();
+    this.gameOver(true);
   }
   prohra(){
-    this.scene.stop("SceneGame");
-    this.scene.start("SceneGameOver",{body:this.body, vyhra:false});
-    this.reset();
+    this.gameOver(false);
   }
+  playLevel(lvl){
+    this.reset();
+    this.paused = false;
+    this.game.scene.start("SceneGame", {level: lvl});
+	}
   reset(){
     this.zombieSpeed =1;
+    this.stars = [];
+    this.zombies = [];
     this.body = 0;
   }
 }
