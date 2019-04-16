@@ -9,6 +9,7 @@ class SceneGame extends Phaser.Scene {
     this.smrtelnost = true;
     this.stars = [];
     this.zombies = [];
+    this.achievedLevel = 1;
     this.levels = [
       {},
       {
@@ -145,9 +146,13 @@ class SceneGame extends Phaser.Scene {
     }
     this.textBody = this.add.text(napisX, napisY+30, "body : "+this.body);
     for (let i = 1; i < (this.levels.length - 1); i++) {
-      this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
+      if(i <= this.achievedLevel){
+        this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
         .setInteractive()
         .on('pointerdown', () => this.playLevel(i) );
+      }else{
+        this.add.text(100, 100+30*i, 'Level '+i, { fill: '#888' })
+      }
     }
 
   }
@@ -155,6 +160,9 @@ class SceneGame extends Phaser.Scene {
     this.paused = !this.paused;
   }
   vyhra(){
+    if(this.level == this.achievedLevel){
+      this.achievedLevel++;
+    }
     this.gameOver(true);
   }
   prohra(){
