@@ -53,8 +53,7 @@ class SceneGame extends Phaser.Scene {
           {},
           {}
         ]
-      },
-      {}
+      }
     ];
     this.nesmrtelnost(1000);
   }
@@ -141,11 +140,14 @@ class SceneGame extends Phaser.Scene {
     var napisY = this.canvas.height/2-10;
     if(vyhra){
       this.text = this.add.text(napisX, napisY, "Výhra");
+      if(this.achievedLevel == this.levels.length){
+        this.text = this.add.text(130, napisY -80, "Princezna zachráně", {fill:"#33f", font:"bold 60px Arial"});
+      }
     }else{
       this.text = this.add.text(napisX, napisY, "Prohra");
     }
     this.textBody = this.add.text(napisX, napisY+30, "body : "+this.body);
-    for (let i = 1; i < (this.levels.length - 1); i++) {
+    for (let i = 1; i < (this.levels.length); i++) {
       if(i <= this.achievedLevel){
         this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
         .setInteractive()
