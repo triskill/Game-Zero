@@ -68,6 +68,9 @@ class SceneGame extends Phaser.Scene {
     this.load.image('gameOverBG', 'assets/gameOverBackground.png');
     //načtení zvuků
     this.load.audio('bod', 'assets/bod.mp3');
+    this.load.audio('vyhra', 'assets/vyhra.mp3');
+    this.load.audio('prohra', 'assets/prohra.mp3');
+    this.load.audio('konec', 'assets/konec.mp3');
   }
   create(){
     // načtení levelu
@@ -78,6 +81,9 @@ class SceneGame extends Phaser.Scene {
     this.hero = this.add.image(200, 200, 'hero');
     //zvuky hry
     this.bodZvuk = this.sound.add('bod');
+    this.vyhraZvuk = this.sound.add('vyhra');
+    this.prohraZvuk = this.sound.add('prohra');
+    this.konecZvuk = this.sound.add('konec');
     // vložení textu
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
@@ -141,9 +147,13 @@ class SceneGame extends Phaser.Scene {
     if(vyhra){
       this.text = this.add.text(napisX, napisY, "Výhra");
       if(this.achievedLevel == this.levels.length){
+        this.konecZvuk.play();
         this.text = this.add.text(130, napisY -80, "Princezna zachráně", {fill:"#33f", font:"bold 60px Arial"});
+      }else{
+        this.vyhraZvuk.play();
       }
     }else{
+      this.prohraZvuk.play();
       this.text = this.add.text(napisX, napisY, "Prohra");
     }
     this.textBody = this.add.text(napisX, napisY+30, "body : "+this.body);
