@@ -9,19 +9,20 @@ class SceneGame extends Phaser.Scene {
     this.smrtelnost = true;
     this.stars = [];
     this.zombies = [];
-    this.achievedLevel = 1;
     this.levels = [
       {},
       {
         zombies:[
-          {},
-          {},
-          {}
+          {type:"kruh", x:100, y:100},
+          {type:"kruh", x:700, y:100},
+          {type:"kruh", x:700, y:500},
+          {type:"kruh", x:100, y:500},
         ],
         stars:[
-          {},
-          {},
-          {}
+            {x:100, y:100},
+            {x:700, y:100},
+            {x:700, y:500},
+            {x:100, y:500},
         ]
       },
       {
@@ -32,10 +33,10 @@ class SceneGame extends Phaser.Scene {
           {}
         ],
         stars:[
-          {},
-          {},
-          {},
-          {}
+          {x:100, y:100},
+          {x:150, y:100},
+          {x:200, y:100},
+          {x:250, y:100}
         ]
       },
       {
@@ -44,16 +45,113 @@ class SceneGame extends Phaser.Scene {
           {},
           {},
           {},
-          {}
+          {},
+          {},
         ],
         stars:[
-          {},
-          {},
-          {},
-          {},
-          {}
-        ]
-      }
+          {x:100, y:100},
+          {x:200, y:200},
+          {x:100, y:300},
+          {x:0, y:200},
+        ],
+            zombies:[
+              {},
+              {},
+              {}
+            ],
+            stars:[
+              {x:400,y:200},
+              {x:400,y:400},
+
+
+              {x:200,y:300},
+              {x:600,y:300},
+
+              {x:300,y:250},
+              {x:500,y:250},
+              {x:300,y:350},
+              {x:500,y:350},
+            ]
+          },
+          {
+            zombies:[
+              {type:"kruh", x:100, y:500},
+              {type:"kruh", x:175, y:450},
+              {type:"kruh", x:250, y:400},
+              {type:"kruh", x:325, y:350},
+              {type:"kruh", x:400, y:300},
+              {type:"kruh", x:475, y:250},
+              {type:"kruh", x:550, y:200},
+              {type:"kruh", x:625, y:150},
+              {type:"kruh", x:700, y:100},
+
+                {type:"stop", x:100, y:500},
+                {type:"stop", x:175, y:450},
+                {type:"stop", x:250, y:400},
+                {type:"stop", x:325, y:350},
+                {type:"stop", x:400, y:300},
+                {type:"stop", x:475, y:250},
+                {type:"stop", x:550, y:200},
+                {type:"stop", x:625, y:150},
+                {type:"stop", x:700, y:100},
+            ],
+            stars:[
+              {x:700,y:500},
+
+            ],
+          },
+          {
+              zombies:[
+                {type:"stop", x:50, y:550},
+                {type:"stop", x:100, y:500},
+                {type:"stop", x:150, y:450},
+                {type:"stop", x:200, y:400},
+                {type:"stop", x:250, y:350},
+                {type:"stop", x:300, y:300},
+                {type:"stop", x:350, y:250},
+                {type:"stop", x:400, y:200},
+                {type:"stop", x:450, y:150},
+                {type:"stop", x:500, y:100},
+                {type:"stop", x:550, y:50},
+              ],
+              stars:[
+                {x:75, y:525},
+                {x:125, y:475},
+                {x:175, y:425},
+                {x:225, y:375},
+                {x:275, y:325},
+                {x:325, y:275},
+                {x:375, y:225},
+                {x:425, y:175},
+                {x:475, y:125},
+                {x:525, y:75},
+                {x:575, y:25},
+
+              ],
+            },
+            {
+              zombies:[
+                {x:200,y:200, type:"kruh", posun:1*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:2*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:3*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:4*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:5*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:6*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:7*Math.PI/4},
+                {x:200,y:200, type:"kruh", posun:8*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:9*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:10*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:11*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:12*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:13*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:14*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:15*Math.PI/4},
+                {x:500,y:500, type:"kruh", posun:16*Math.PI/4},
+                       ],
+              stars:[
+                {x:500,y:500},
+              ]
+        },
     ];
     this.nesmrtelnost(1000);
   }
@@ -68,9 +166,6 @@ class SceneGame extends Phaser.Scene {
     this.load.image('gameOverBG', 'assets/gameOverBackground.png');
     //načtení zvuků
     this.load.audio('bod', 'assets/bod.mp3');
-    this.load.audio('vyhra', 'assets/vyhra.mp3');
-    this.load.audio('prohra', 'assets/prohra.mp3');
-    this.load.audio('konec', 'assets/konec.mp3');
   }
   create(){
     // načtení levelu
@@ -81,9 +176,6 @@ class SceneGame extends Phaser.Scene {
     this.hero = this.add.image(200, 200, 'hero');
     //zvuky hry
     this.bodZvuk = this.sound.add('bod');
-    this.vyhraZvuk = this.sound.add('vyhra');
-    this.prohraZvuk = this.sound.add('prohra');
-    this.konecZvuk = this.sound.add('konec');
     // vložení textu
     this.text = this.add.text(0, 0, "Game Zero");
     this.bodyText = this.add.text(400, 0, "body: "+this.body);
@@ -146,25 +238,14 @@ class SceneGame extends Phaser.Scene {
     var napisY = this.canvas.height/2-10;
     if(vyhra){
       this.text = this.add.text(napisX, napisY, "Výhra");
-      if(this.achievedLevel == this.levels.length){
-        this.konecZvuk.play();
-        this.text = this.add.text(130, napisY -80, "Princezna zachráně", {fill:"#33f", font:"bold 60px Arial"});
-      }else{
-        this.vyhraZvuk.play();
-      }
     }else{
-      this.prohraZvuk.play();
       this.text = this.add.text(napisX, napisY, "Prohra");
     }
     this.textBody = this.add.text(napisX, napisY+30, "body : "+this.body);
     for (let i = 1; i < (this.levels.length); i++) {
-      if(i <= this.achievedLevel){
-        this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
+      this.add.text(100, 100+30*i, 'Level '+i, { fill: '#0f0' })
         .setInteractive()
         .on('pointerdown', () => this.playLevel(i) );
-      }else{
-        this.add.text(100, 100+30*i, 'Level '+i, { fill: '#888' })
-      }
     }
 
   }
@@ -172,9 +253,6 @@ class SceneGame extends Phaser.Scene {
     this.paused = !this.paused;
   }
   vyhra(){
-    if(this.level == this.achievedLevel){
-      this.achievedLevel++;
-    }
     this.gameOver(true);
   }
   prohra(){

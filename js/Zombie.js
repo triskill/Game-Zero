@@ -3,12 +3,21 @@ class Zombie{
     this.game = game;
     this.x = properties.x || Math.random()*this.game.canvas.width;
     this.y = properties.y || Math.random()*this.game.canvas.height;
+    this.type = properties.type || "utok"
+    this.properties = properties;
 
     this.obrazek = this.game.add.image(this.x, this.y, 'zombie');
     this.i=0; //pro potreby vypoctu kruhove drahy
   }
   update(){
-    this.utok();
+    if(this.type == "utok"){
+      this.utok();
+    }else if(this.type == "kruh"){
+      this.chodimVKruhu();
+    }else{
+
+    }
+
     if(this.narazilJsemDoHrdiny() && this.game.smrtelnost){
       this.game.prohra();
     }
@@ -30,8 +39,13 @@ class Zombie{
     }
   }
   chodimVKruhu(){
-    this.obrazek.x = this.x + Math.sin(this.i/50)*100;
-    this.obrazek.y = this.y + Math.cos(this.i/50)*100;
+
+    if(this.properties.posun===undefined){
+      this.properties.posun=0;
+    }
+
+    this.obrazek.x = this.x + Math.sin(this.i/50 + this.properties.posun)*100;
+    this.obrazek.y = this.y + Math.cos(this.i/50 + this.properties.posun)*100;
     this.i++;
   }
   narazilJsemDoHrdiny(){
